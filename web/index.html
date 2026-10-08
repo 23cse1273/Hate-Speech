@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hate Speech & Sentiment Classification AI Platform</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/web/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">🛡️</div>
+                <div class="brand-text">
+                    <h2>HateGuard AI</h2>
+                    <span>ML Classification Engine</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="tab-classifier">
+                    <span class="nav-icon">🎯</span> Live Classifier
+                </button>
+                <button class="nav-btn" data-tab="tab-analytics">
+                    <span class="nav-icon">📊</span> Analytics & Charts
+                </button>
+                <button class="nav-btn" data-tab="tab-preprocessing">
+                    <span class="nav-icon">📝</span> Preprocessing Report
+                </button>
+                <button class="nav-btn" data-tab="tab-developer">
+                    <span class="nav-icon">⚡</span> Batch & API Tester
+                </button>
+            </nav>
+
+            <div class="model-badge">
+                <div class="badge-header">Active ML Model</div>
+                <div class="badge-title" id="badge-model-name">SGD Classifier</div>
+                <div class="badge-status">
+                    <span class="status-dot"></span> Ready & Operational
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h1 id="page-title">Live Hate Speech & Sentiment Classifier</h1>
+                    <p id="page-subtitle">Analyze text content for hate speech, offensive language, and neutral sentiment in real-time.</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">Model Accuracy</span>
+                        <span class="stat-val" id="stat-accuracy">89.7%</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Macro F1</span>
+                        <span class="stat-val" id="stat-f1">0.755</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB 1: LIVE CLASSIFIER -->
+            <section id="tab-classifier" class="tab-content active">
+                <div class="grid-2col">
+                    <!-- Left: Input Box -->
+                    <div class="card input-card">
+                        <div class="card-header">
+                            <h3>Input Text Content</h3>
+                            <span class="char-count" id="char-count">0 chars</span>
+                        </div>
+                        <textarea id="user-input" placeholder="Type or paste any tweet or comment to analyze sentiment and hate speech..." rows="6"></textarea>
+                        
+                        <div class="quick-samples">
+                            <span class="quick-label">Try Samples:</span>
+                            <button class="sample-btn" data-sample="Good morning everyone! Hope you all have a wonderful day ahead.">Neutral</button>
+                            <button class="sample-btn" data-sample="Shut up you stupid b***h, nobody asked for your opinion!">Offensive</button>
+                            <button class="sample-btn" data-sample="I hate all [slur] people, they should be eliminated from our country.">Hate Speech</button>
+                        </div>
+
+                        <div class="card-footer">
+                            <button id="btn-analyze" class="btn-primary">
+                                <span class="btn-text">Analyze Content</span>
+                                <span class="btn-spinner hidden"></span>
+                            </button>
+                            <button id="btn-clear" class="btn-secondary">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Analysis Output -->
+                    <div class="card result-card">
+                        <div class="card-header">
+                            <h3>Classification Analysis</h3>
+                            <span id="result-status-tag" class="tag tag-neutral">Awaiting Input</span>
+                        </div>
+
+                        <div id="empty-state" class="empty-state">
+                            <div class="empty-icon">🔍</div>
+                            <p>Enter text on the left and click <strong>Analyze Content</strong> to view probability breakdown and sentiment insights.</p>
+                        </div>
+
+                        <div id="results-container" class="results-container hidden">
+                            <!-- Main Banner -->
+                            <div id="result-banner" class="result-banner banner-neither">
+                                <div class="banner-icon" id="banner-icon">✅</div>
+                                <div class="banner-info">
+                                    <h2 id="result-class-name">Neither (Clean)</h2>
+                                    <p id="result-description">Neutral language without offensive or toxic terms.</p>
+                                </div>
+                                <div class="confidence-badge">
+                                    <span class="conf-title">Confidence</span>
+                                    <span class="conf-val" id="result-confidence">95.2%</span>
+                                </div>
+                            </div>
+
+                            <!-- Probability Bars -->
+                            <div class="probability-section">
+                                <h4>Probability Breakdown</h4>
+                                <div class="prob-row">
+                                    <div class="prob-meta">
+                                        <span class="prob-name">Hate Speech</span>
+                                        <span class="prob-percent" id="prob-hate-val">0.0%</span>
+                                    </div>
+                                    <div class="prob-bar-track">
+                                        <div class="prob-bar-fill bar-hate" id="prob-hate-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="prob-row">
+                                    <div class="prob-meta">
+                                        <span class="prob-name">Offensive Language</span>
+                                        <span class="prob-percent" id="prob-offense-val">0.0%</span>
+                                    </div>
+                                    <div class="prob-bar-track">
+                                        <div class="prob-bar-fill bar-offense" id="prob-offense-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="prob-row">
+                                    <div class="prob-meta">
+                                        <span class="prob-name">Neither (Clean/Neutral)</span>
+                                        <span class="prob-percent" id="prob-neither-val">0.0%</span>
+                                    </div>
+                                    <div class="prob-bar-track">
+                                        <div class="prob-bar-fill bar-neither" id="prob-neither-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preprocessed Tokens -->
+                            <div class="tokens-section">
+                                <h4>Preprocessed Tokens</h4>
+                                <div id="tokens-list" class="tokens-list">
+                                    <!-- Dynamic Token Chips -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ANALYTICS & CHARTS -->
+            <section id="tab-analytics" class="tab-content">
+                <div class="grid-2col">
+                    <div class="card chart-card">
+                        <h3>Target Class Distribution</h3>
+                        <p class="chart-sub">Frequencies of Hate Speech, Offensive Language, and Neither classes.</p>
+                        <img src="/static/images/class_distribution.png" alt="Class Distribution" class="chart-img">
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Confusion Matrix</h3>
+                        <p class="chart-sub">Evaluation of prediction accuracy across test dataset.</p>
+                        <img src="/static/images/confusion_matrix.png" alt="Confusion Matrix" class="chart-img">
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Text Length Preprocessing Impact</h3>
+                        <p class="chart-sub">KDE Distribution of tweet character lengths before vs after cleaning.</p>
+                        <img src="/static/images/text_length_distribution.png" alt="Text Length Distribution" class="chart-img">
+                    </div>
+                    <div class="card chart-card">
+                        <h3>Top N-Grams per Category</h3>
+                        <p class="chart-sub">Most frequent unigrams extracted per target class.</p>
+                        <img src="/static/images/top_ngrams.png" alt="Top N-Grams" class="chart-img">
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: PREPROCESSING REPORT -->
+            <section id="tab-preprocessing" class="tab-content">
+                <div class="card report-card">
+                    <div class="card-header">
+                        <h3>Data Preprocessing Conclusion & Summary</h3>
+                        <button id="btn-copy-report" class="btn-secondary btn-sm">Copy Report</button>
+                    </div>
+                    <pre id="preprocessing-report-text" class="code-block">Loading preprocessing summary report...</pre>
+                </div>
+            </section>
+
+            <!-- TAB 4: BATCH & DEVELOPER API -->
+            <section id="tab-developer" class="tab-content">
+                <div class="grid-2col">
+                    <!-- Batch Tester -->
+                    <div class="card">
+                        <h3>Batch Text Analysis</h3>
+                        <p class="chart-sub">Enter multiple sentences (one per line) to run batch classification.</p>
+                        <textarea id="batch-input" rows="7" placeholder="Good morning!\nYou are terrible.\nHave a nice day."></textarea>
+                        <button id="btn-batch-analyze" class="btn-primary mt-3">Process Batch</button>
+
+                        <div id="batch-results-table" class="mt-4 hidden">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Input Text</th>
+                                        <th>Prediction</th>
+                                        <th>Confidence</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="batch-table-body">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- API Specs -->
+                    <div class="card">
+                        <h3>REST API Endpoint</h3>
+                        <div class="api-meta">
+                            <span class="badge-post">POST</span> <code>http://localhost:8000/api/predict</code>
+                        </div>
+                        <p class="chart-sub mt-2">Example JSON Request Payload:</p>
+                        <pre class="code-block json-block">{
+  "text": "Have a wonderful day ahead!"
+}</pre>
+
+                        <p class="chart-sub mt-3">Example Python Code Snippet:</p>
+                        <pre class="code-block python-block">import requests
+
+url = "http://localhost:8000/api/predict"
+payload = {"text": "Have a wonderful day ahead!"}
+response = requests.post(url, json=payload)
+print(response.json())</pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/web/app.js"></script>
+</body>
+</html>
